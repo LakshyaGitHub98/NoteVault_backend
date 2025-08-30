@@ -31,6 +31,7 @@ class UserRoutesController {
         const deletedUser=await services.deleteUser(userId);
         res.send(deletedUser);
     }
+
 }
 
 module.exports = new UserRoutesController();
