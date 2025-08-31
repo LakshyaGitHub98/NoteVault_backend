@@ -3,6 +3,7 @@ const app = express();
 const cors=require('cors');
 const userAuthRouter=require('./routes/authectication/userAuth');
 const adminUserRouter=require('./routes/admin/userRoutes');
+const uploadFile=require("./routes/files/uploadFile")
 
 const connectToMongo = require('./config/config');
 const user = require("./models/user");
@@ -28,10 +29,12 @@ app.use('/api/users',adminUserRouter);
 app.use('/api/auth',userAuthRouter);
 
 
+app.use('/api/files',uploadFile);
+
 app.get('/hello',(req,res)=>{
     res.send("Hello World");
 });
+
 app.listen(port, '0.0.0.0',()=>{
     console.log("Server started on port : " + port);
 });
-

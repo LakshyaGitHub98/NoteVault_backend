@@ -12,7 +12,7 @@ class AuthController {
             if (!username || !password) {
             return res.status(400).json({ error: 'Username and password required' });
             }
-
+            console.log("Login attempt:", req.body);
             const user = await User.findOne({ username });
             if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
@@ -20,8 +20,8 @@ class AuthController {
 
             const isMatch = await bcrypt.compare(password, user.password);
             if (isMatch) {
-            res.send('Login successful');
-            } else {
+                return res.status(200).json({ userId: user._id });
+            }else {
             res.status(401).json({ error: 'Invalid credentials' });
             }
         } catch (err) {
