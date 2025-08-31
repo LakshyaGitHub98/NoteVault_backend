@@ -3,7 +3,7 @@ const app = express();
 const cors=require('cors');
 const userAuthRouter=require('./routes/authectication/userAuth');
 const adminUserRouter=require('./routes/admin/userRoutes');
-const uploadFile=require("./routes/files/uploadFile")
+const fileRoutes=require("./routes/files/fileRoutes")
 
 const connectToMongo = require('./config/config');
 const user = require("./models/user");
@@ -29,7 +29,7 @@ app.use('/api/users',adminUserRouter);
 app.use('/api/auth',userAuthRouter);
 
 
-app.use('/api/files',uploadFile);
+app.use('/api/file',fileRoutes);
 
 app.get('/hello',(req,res)=>{
     res.send("Hello World");
