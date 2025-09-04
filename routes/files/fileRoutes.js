@@ -5,7 +5,9 @@ const uploadFileController = require('../../controllers/file/uploadFileControlle
 const viewFileController=require('../../controllers/file/viewFileController')
 
 // POST /upload
-router.get('/:userId/:filename',viewFileController);
+router.get('/files/:userId',viewFileController.viewFiles);
+
+router.get('/:userId/:filename',viewFileController.viewFile);
 
 router.post('/upload',uploadFileController);
 

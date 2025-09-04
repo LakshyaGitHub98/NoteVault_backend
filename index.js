@@ -21,6 +21,13 @@ require('dotenv').config(); // This is used to load env variables from .env file
 
 const port = process.env.PORT || 8000;          //This is used to use env port number
 
+// testing 
+// app.use((req, res, next) => {
+//   console.log(req.method, req.url);
+//   next();
+// });
+
+
 // For Admin Routes
 app.use('/api/users',adminUserRouter);
 
