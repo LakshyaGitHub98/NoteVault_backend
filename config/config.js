@@ -6,8 +6,8 @@ console.log("MONGO URL IS", mongoURI);
 
 const connectToMongo = () => {
   mongoose.connect(mongoURI, {
-    //useNewUrlParser: true,
-    //useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   }).then(() => {
     console.log("Connected to MongoDB successfully");
   }).catch((err) => {

@@ -3,9 +3,10 @@ const User = require('./user');
 
 const fileSchema = new mongoose.Schema({
   filename: { type: String, required: true },
-  description : { type: String },
-  user : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  description: { type: String },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   uploadDate: { type: Date, default: Date.now },
+  fileUrl: { type: String }, // ✅ Optional: for system-uploaded files
 });
 
 module.exports = mongoose.model('File', fileSchema);

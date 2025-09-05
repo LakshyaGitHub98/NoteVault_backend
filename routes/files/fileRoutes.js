@@ -1,15 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
-const uploadFileController = require('../../controllers/file/uploadFileController');
-const viewFileController=require('../../controllers/file/viewFileController')
+// Import controllers
+const {uploadFile,uploadFileFromSystem} = require('../../controllers/file/uploadFileController');
 
-// POST /upload
-router.get('/files/:userId',viewFileController.viewFiles);
+const {viewFiles,viewFile} = require('../../controllers/file/viewFileController');
 
-router.get('/:userId/:filename',viewFileController.viewFile);
+// View all files of a user
+router.get('/files/:userId', viewFiles);
 
-router.post('/upload',uploadFileController);
+// View a specific file by filename
+router.get('/:userId/:filename', viewFile);
+
+// Upload metadata-only file (no actual file content)
+router.post('/upload', uploadFile);
+
+// Upload actual system file (multipart/form-data)
+router.post('/uploadFile', upload.single('file'), uploadFileFromSystem);
 
 
 
