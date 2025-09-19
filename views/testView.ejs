@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Files Viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #4B0082;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #4B0082;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #5e00a3;
+    }
+    #fileList div {
+      background: white;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    a {
+      color: #4B0082;
+      text-decoration: underline;
+    }
+    .error {
+      color: red;
+    }
+    .loading {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h2>System-Uploaded Files</h2>
+  <form id="viewForm">
+    <input type="text" id="userId" placeholder="Enter User ID" required>
+    <button type="submit">View</button>
+  </form>
+  <div id="fileList"></div>
+
+  <script>
+    document.getElementById('viewForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('userId').value.trim();
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '<p class="loading">Loading files...</p>';
+
+      try {
+        console.log("Test View chla !!");
+        const res = await fetch(`/api/file/viewSystemUploadedFiles/${userId}`);
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const { systemFiles } = await res.json();
+        console.log('🔍 View route hit for user:', userId);
+
+        fileList.innerHTML = systemFiles?.length
+          ? systemFiles.map(f => `
+              <div>
+                <p><strong>${f.filename}</strong></p>
+                <a href="${f.fileUrl}" target="_blank">Open</a>
+                <p>${new Date(f.uploadDate).toLocaleString()}</p>
+              </div>`).join('')
+          : '<p>No files found.</p>';
+      } catch (err) {
+                
+        fileList.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -33,9 +33,14 @@ class UserRoutesController {
 
 
     async createUser(req, res) {
-        const newUser = req.body;
-        const createdUser= await services.createUser(newUser);
-        res.send("User created: " + createdUser.id);
+        try {
+            const newUser = req.body;
+            console.log("User aaya h ye h :",newUser);
+            const createdUser= await services.createUser(newUser);
+            res.send("User created: " + createdUser.id);
+        } catch (e) {
+            console.log("Error :",e);
+        }
     }
 
     async updateUser(req, res) {

@@ -22,7 +22,7 @@ class FileController {
   static async uploadFile(req, res) {
     try {
       const { userId, filename, description } = req.body;
-
+      console.log("Upload ho rha h ..");
       if (!userId || !filename) {
         return res.status(400).json({ error: 'Missing required fields: userId or filename' });
       }
@@ -61,7 +61,7 @@ class FileController {
     try {
       const { userId } = req.body;
       const uploadedFile = req.file;
-
+      console.log("Upload from system chl rha h ..");
       if (!userId || !uploadedFile) {
         return res.status(400).json({ error: 'Missing userId or file' });
       }
