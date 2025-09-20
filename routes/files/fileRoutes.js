@@ -7,6 +7,9 @@ const DeleteFileController = require('../../controllers/file/deleteFileControlle
 
 console.log("📁 File routes hit...");
 
+// 🆕 Route for saving editor note as plain JSON
+router.post('/create', FileController.createNoteFile); // <-- ✅ Add this line
+
 // ✅ This route MUST be defined first
 router.get('/:fileId/view', ViewFileController.viewFileById);
 
@@ -16,15 +19,14 @@ router.get('/files/:userId', ViewFileController.viewFiles);
 // 📄 View a specific file by filename
 router.get('/:userId/:filename', ViewFileController.viewFile);
 
-// 📝 Upload metadata-only file
-router.post('/upload', FileController.uploadFile);
+// 📝 Upload metadata-only file (assuming this means createNoteFile)
+router.post('/upload', FileController.createNoteFile);
 
 // 🔥 Upload actual file and store in DB
 router.post('/uploadFile', FileController.uploadMiddleware, FileController.uploadFileToDB);
 
 // 🖥️ View system-uploaded files
 router.post('/files/viewSystemUploadedFiles', ViewFileController.viewSystemUploadedFiles);
-
 
 // 🗑️ Delete a file
 router.delete('/user/:userId/file/:fileId', DeleteFileController.deleteFile);
