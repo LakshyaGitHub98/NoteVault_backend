@@ -1,3 +1,4 @@
+// index.js
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -6,11 +7,11 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 // 🛠️ Routes and Config
-const userAuthRouter = require("./routes/authentication/userAuth"); // ✅ Fixed typo: 'authectication' → 'authentication'
+const userAuthRouter = require("./routes/authentication/userAuth");
 const adminUserRouter = require("./routes/admin/userRoutes");
 const fileRoutes = require("./routes/files/fileRoutes");
 const connectToMongo = require("./config/config");
-const { checkForAuthentication, restrictTo } = require("./middlewares/auth");
+const { checkForAuthentication } = require("./middlewares/auth");
 
 // 🔗 Connect to MongoDB
 connectToMongo();
@@ -20,35 +21,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(checkForAuthentication); // ✅ Auth middleware applied globally
-// for trial
-app.use(express.static('public')); // assuming your HTML is in /public
-
-app.use((req, res, next) => {
-  if (req.method === 'POST') {
-    console.log("📨 Incoming POST:", req.url);
-  }
-  next();
-});
-
+app.use(express.static("public"));
 
 // 🎨 EJS View Engine Setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// 🚀 API Routes
-app.use("/api/users", adminUserRouter);
-app.use("/api/auth", userAuthRouter);
-app.use("/api/file", fileRoutes);
+// 🔓 Public Routes
+app.use("/api/auth", userAuthRouter); // OTP route public
 
-// 🧪 Test View Routes
+// 🔒 Private Routes (only authenticated users)
+app.use("/api/users", checkForAuthentication, adminUserRouter);
+app.use("/api/file", checkForAuthentication, fileRoutes);
+
+// 🧪 Test Views
 app.get("/test-upload", (req, res) => {
-  console.log("🧪 Rendering testUpload view...");
   res.render("testUpload");
 });
 
 app.get("/testView", (req, res) => {
-  console.log("🧪 Rendering testView...");
   res.render("testView");
 });
 
