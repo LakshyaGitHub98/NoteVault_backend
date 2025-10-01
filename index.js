@@ -1,4 +1,3 @@
-// index.js
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -11,7 +10,7 @@ const userAuthRouter = require("./routes/authentication/userAuth");
 const adminUserRouter = require("./routes/admin/userRoutes");
 const fileRoutes = require("./routes/files/fileRoutes");
 const connectToMongo = require("./config/config");
-const { checkForAuthentication } = require("./middlewares/auth");
+const { checkForAuthentication, requireVerified } = require("./middlewares/auth");
 
 // 🔗 Connect to MongoDB
 connectToMongo();
@@ -27,14 +26,15 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// 🔓 Public Routes
-app.use("/api/auth", userAuthRouter); // OTP route public
+// 🔓 Public Routes (no auth required)
+app.use("/api/auth", userAuthRouter); 
+// Includes: login, register, send-otp, verify-otp, forgot-password, reset-password
 
-// 🔒 Private Routes (only authenticated users)
-app.use("/api/users", checkForAuthentication, adminUserRouter);
-app.use("/api/file", checkForAuthentication, fileRoutes);
+// 🔒 Private Routes (JWT + OTP verified required)
+app.use("/api/users", checkForAuthentication, requireVerified, adminUserRouter);
+app.use("/api/file", checkForAuthentication, requireVerified, fileRoutes);
 
-// 🧪 Test Views
+// 🧪 Test Views (for dev only)
 app.get("/test-upload", (req, res) => {
   res.render("testUpload");
 });

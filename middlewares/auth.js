@@ -1,5 +1,6 @@
 const authServices = require("../services/auth/authServices");
 
+// 🔑 Middleware: Check JWT and attach user
 function checkForAuthentication(req, res, next) {
   req.user = null;
 
@@ -15,7 +16,7 @@ function checkForAuthentication(req, res, next) {
 
   let user;
   try {
-    user = authServices.getUser(token);
+    user = authServices.getUser(token); // decode + verify JWT
   } catch (err) {
     console.log("❌ Token parsing error:", err.message);
     return res.status(401).json({ error: "Unauthorized: Invalid token format" });
@@ -27,11 +28,11 @@ function checkForAuthentication(req, res, next) {
   }
 
   req.user = user;
-  // console.log("✅ Authenticated User:", user);
   console.log("🛡️ Auth middleware triggered for:", req.method, req.url);
   next();
 }
 
+// 🔒 Middleware: Restrict access to specific roles
 function restrictTo(roles = []) {
   return function (req, res, next) {
     if (!req.user || !req.user.role) {
@@ -47,11 +48,25 @@ function restrictTo(roles = []) {
       return res.status(403).json({ error: "Unauthorized: Insufficient role" });
     }
 
-    next(); // Role is allowed
+    next(); // ✅ Role is allowed
   };
+}
+
+// ✅ Middleware: Ensure user has verified OTP
+function requireVerified(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized: No user" });
+  }
+
+  if (!req.user.isVerified) {
+    return res.status(403).json({ error: "Forbidden: OTP verification required" });
+  }
+
+  next();
 }
 
 module.exports = {
   checkForAuthentication,
   restrictTo,
+  requireVerified,
 };
