@@ -86,7 +86,7 @@ class AuthController {
       return res.status(200).json({ message: `OTP sent to ${email}` });
     } catch (err) {
       console.error("Send OTP error:", err);
-      return res.status(500).json({ error: "Failed to send OTP" });
+      return res.status(500).json({ error: err.message });
     }
   }
 
