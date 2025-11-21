@@ -83,7 +83,7 @@ class AuthController {
       };
 
       await sendOtpEmail(email, otp);
-      return res.status(200).json({ message: `OTP se~nt to ${email}` });
+      return res.status(200).json({ message: `OTP sent to ${email}` });
     } catch (err) {
       console.error("Send OTP error:", err);
       return res.status(500).json({ error: "Failed to send OTP" });
