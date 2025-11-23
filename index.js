@@ -43,28 +43,6 @@ app.get("/testView", (req, res) => {
   res.render("testView");
 });
 
-// smtp test route
-app.get("/debug-smtp", async (req, res) => {
-  const net = require("net");
-  const host = process.env.SMTP_HOST;
-  const port = process.env.SMTP_PORT;
-
-  const socket = net.createConnection({ host, port, timeout: 5000 });
-
-  socket.on("connect", () => {
-    socket.end();
-    res.send("SMTP reachable ✔");
-  });
-
-  socket.on("timeout", () => {
-    socket.destroy();
-    res.send("SMTP timed out ❌");
-  });
-
-  socket.on("error", (err) => {
-    res.send("SMTP error: " + err.message);
-  });
-});
 
 
 
