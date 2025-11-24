@@ -1,60 +1,79 @@
+const multer = require("multer");
 const File = require("../../models/file");
 
-// Middleware for handling file uploads (multer ya koi bhi lib use kar rahe ho)
-const uploadMiddleware = (req, res, next) => {
-  // Tumhari existing multer config yahan aayegi
-  next();
-};
+// Multer memory storage (DB me buffer store kar rahe ho)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Create a note file (metadata only)
+// Single file field "file"
+const uploadMiddleware = upload.single("file");
+
+// Create a note file (metadata only – from editor)
 const createNoteFile = async (req, res) => {
   try {
-    if (!req.user || !req.user.isVerified) {
-      return res.status(403).json({ error: "OTP verification required" });
+    if (!req.user) {
+      return res.status(401).json({ error: "Login required" });
     }
 
     const { filename, content } = req.body;
+
     if (!filename || !content) {
-      return res.status(400).json({ error: "Filename and content required" });
+      return res
+        .status(400)
+        .json({ error: "Filename and content required" });
     }
+
+    const userId = req.user._id || req.user.id;
 
     const newFile = new File({
       filename,
       content,
-      owner: req.user.id,
+      user: userId,              // 🔥 FIX: yahi field schema expect karta hai
+      // owner: userId,           // agar schema me owner nahi hai to iski zaroorat nahi
     });
 
     await newFile.save();
-    return res.status(201).json({ message: "Note file created", file: newFile });
+    return res
+      .status(201)
+      .json({ message: "Note file created", file: newFile });
   } catch (err) {
     console.error("Create note error:", err);
-    return res.status(500).json({ error: "Failed to create note file" });
+    return res
+      .status(500)
+      .json({ error: "Failed to create note file" });
   }
 };
 
-// Upload actual file to DB
+// Upload actual file to DB (binary)
 const uploadFileToDB = async (req, res) => {
   try {
-    if (!req.user || !req.user.isVerified) {
-      return res.status(403).json({ error: "OTP verification required" });
+    if (!req.user) {
+      return res.status(401).json({ error: "Login required" });
     }
 
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    const userId = req.user._id || req.user.id;
+
     const newFile = new File({
       filename: req.file.originalname,
       data: req.file.buffer,
       contentType: req.file.mimetype,
-      owner: req.user.id,
+      user: userId,             // 🔥 yahan bhi same fix
+      // owner: userId,
     });
 
     await newFile.save();
-    return res.status(201).json({ message: "File uploaded", file: newFile });
+    return res
+      .status(201)
+      .json({ message: "File uploaded", file: newFile });
   } catch (err) {
     console.error("Upload file error:", err);
-    return res.status(500).json({ error: "Failed to upload file" });
+    return res
+      .status(500)
+      .json({ error: "Failed to upload file" });
   }
 };
 

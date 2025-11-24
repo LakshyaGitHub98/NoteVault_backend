@@ -57,7 +57,7 @@ function requireVerified(req, res, next) {
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized: No user" });
   }
-
+  console.log("🔍 isVerified:", req.method,req.url);
   if (!req.user.isVerified) {
     return res.status(403).json({ error: "Forbidden: OTP verification required" });
   }

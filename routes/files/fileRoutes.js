@@ -16,7 +16,7 @@ console.log("📁 File routes hit...");
 router.post(
   "/create",
   checkForAuthentication,
-  requireVerified,
+  // requireVerified,
   FileController.createNoteFile
 );
 
@@ -24,7 +24,7 @@ router.post(
 router.get(
   "/:fileId/view",
   checkForAuthentication,
-  requireVerified,
+  // requireVerified,
   ViewFileController.viewFileById
 );
 

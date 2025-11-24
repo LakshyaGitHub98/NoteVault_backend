@@ -31,8 +31,8 @@ app.use("/api/auth", userAuthRouter);
 // Includes: login, register, send-otp, verify-otp, forgot-password, reset-password
 
 // 🔒 Private Routes (JWT + OTP verified required)
-app.use("/api/users", checkForAuthentication, requireVerified, adminUserRouter);
-app.use("/api/file", checkForAuthentication, requireVerified, fileRoutes);
+app.use("/api/users", checkForAuthentication, adminUserRouter);
+app.use("/api/file", checkForAuthentication, fileRoutes);
 
 // 🧪 Test Views (for dev only)
 app.get("/test-upload", (req, res) => {
